@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+    <head>
+        <title>View Football</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	</head>
+    <body>
+        <h1>Football Leagues</h1>
+        <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
+        <div>
+            <table class="table" id="footballTable">
+                <tr>
+                        <th>id</th>
+                        <th>League</th>
+                        <th>Club</th>
+                        <th>Known_As</th>
+                        <th>Manager</th>
+                        <th>Home Ground</th>
+                        <th>Capacity</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                </tr>
+
+            </table>
+        </div>
+        <div id='createUpdateForm' style="display: none">
+                <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Football</h2>
+                <input type="hidden" name="id"/>
+                League <input type="text" name="League"/> <br/>
+                Club <input type="text" name="Club"/> <br/>
+                Known_As <input type="text" name="Known_As"/> <br/>
+                Manager <input type="text" name="Manager"/> <br/>
+                Home Ground <input type="text" name="Home_ground"/> <br/>
+                Capacity <input type="number" name="Capacity"/> <br/>
+                <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
+                <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+        </div>
+    </body>
+    <script>
+    function showCreate(){
+        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('footballTable').style.display="none"
+        document.getElementById('createUpdateForm').style.display="block"
+
+        document.getElementById('createLabel').style.display="inline"
+        document.getElementById('updateLabel').style.display="none"
+
+        document.getElementById('doCreateButton').style.display="block"
+        document.getElementById('doUpdateButton').style.display="none"
+
+    }
+    function showViewAll(){
+    
+        document.getElementById('showCreateButton').style.display="block"
+        document.getElementById('footballTable').style.display="block"
+        document.getElementById('createUpdateForm').style.display="none"
+    }
+    function showUpdate(buttonElement){
+        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('footballTable').style.display="none"
+        document.getElementById('createUpdateForm').style.display="block"
+
+        document.getElementById('createLabel').style.display="none"
+        document.getElementById('updateLabel').style.display="inline"
+
+        document.getElementById('doCreateButton').style.display="none"
+        document.getElementById('doUpdateButton').style.display="block"
+
+        var rowElement = buttonElement.parentNode.parentNode
+        // these is a way of finding the closest <tr> which would safer, closest()
+     
+        var football = getFootballFromRow(rowElement)
+        populateFormWithFootball(Football)
+    }
+    function doCreate(){
+        var form = document.getElementById('createUpdateForm')
+
+        var football = {}
+
+        football.League = form.querySelector('input[name="League"]').value
+        football.Club = form.querySelector('input[name="Club"]').value
+        football.Known_As = form.querySelector('input[name="Known_As"]').value
+        football.Manager = form.querySelector('input[name="Manager"]').value
+        football.Home_ground= form.querySelector('input[name="Home_ground"]').value
+        football.Capacity = form.querySelector('input[name="Capacity"]').value
+        console.log(JSON.stringify(football))
+        createFootballAjax(football)
+        
+
+    }
+    function doUpdate(){
+        var football = getFootballFromForm();
+        var rowElement = document.getElementById(football.id);
+        updateFootballAjax(football);
+        setCarInRow(rowElement,car)
+       
+        clearForm()
+        showViewAll()
+    }
+    function doDelete(r){
+        var tableElement = document.getElementById('carTable')
+        var index = r.parentNode.parentNode.rowIndex; 
+        tableElement.deleteRow(index);
+    }
+    function addFootballToTable(football){
+        var tableElement = document.getElementById('footballTable')
+        var rowElement = tableElement.insertRow(-1)
+        rowElement.setAttribute('id',football.id)
+        var cell1 = rowElement.insertCell(0);
+        cell1.innerHTML = football.id
+        var cell2 = rowElement.insertCell(1);
+        cell2.innerHTML = football.League
+        var cell3 = rowElement.insertCell(2);
+        cell3.innerHTML = football.Club
+        var cell4 = rowElement.insertCell(3);
+        cell4.innerHTML = football.Known_As
+        var cell5 = rowElement.insertCell(4);
+        cell5.innerHTML = football.Manager
+        var cell6 = rowElement.insertCell(5);
+        cell6.innerHTML = football.Home_ground
+        var cell7 = rowElement.insertCell(6);
+        cell7.innerHTML = football.Capacity
+        var cell8 = rowElement.insertCell(7);
+        cell8.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+        var cell9 = rowElement.insertCell(8);
+        cell9.innerHTML = '<button onclick=doDelete(this)>delete</button>'
+       
+    }
+
+    function clearForm(){
+        var form = document.getElementById('createUpdateForm')
+
+        form.querySelector('input[name="League"]').value=''
+        form.querySelector('input[name="Club"]').value=''
+        form.querySelector('input[name="Known_As"]').value=''
+        form.querySelector('input[name="Manager"]').value=''
+        form.querySelector('input[name="Home Ground"]').value=''
+        form.querySelector('input[name="Capacity"]').value=''
+    }
+    function getFootballFromRow(rowElement){
+        var football ={}
+        football.id  = rowElement.getAttribute('id')
+        football.League = rowElement.cells[1].firstChild.textContent
+        football.Club = rowElement.cells[2].firstChild.textContent
+        football.Known_As = rowElement.cells[3].firstChild.textContent
+        football.Manager = rowElement.cells[4].firstChild.textContent
+        football.Home_ground = rowElement.cells[5].firstChild.textContent
+        football.Capacity = parseInt(rowElement.cells[6].firstChild.textContent,10)
+        return football
+    }
+    function setFootballInRow(rowElement, football){
+        rowElement.cells[0].firstChild.textContent= football.id  
+        rowElement.cells[1].firstChild.textContent= football.League 
+        rowElement.cells[2].firstChild.textContent= football.Club
+        rowElement.cells[3].firstChild.textContent= football.Known_As
+        rowElement.cells[4].firstChild.textContent= football.Manager
+        rowElement.cells[5].firstChild.textContent= football.Home_ground
+        rowElement.cells[6].firstChild.textContent= football.Capacity
+    }
+    function populateFormWithFootball(football){
+        var form = document.getElementById('createUpdateForm')
+        form.querySelector('input[name="id"]').disabled = true
+
+        form.querySelector('input[name="id"]').value  = football.id
+        form.querySelector('input[name="League"]').value= football.League
+        form.querySelector('input[name="Club"]').value= football.Club
+        form.querySelector('input[name="Known_As"]').value= football.Known_As
+        form.querySelector('input[name="Manager"]').value= football.Manager
+        form.querySelector('input[name="Home_ground"]').value= football.Home_ground
+        form.querySelector('input[name="Capacity"]').value= football.Capacity
+        return football
+    }
+    function getFootballFromForm(){
+        var form = document.getElementById('createUpdateForm')
+        var car = {}
+        car.reg = form.querySelector('input[name="reg"]').value
+        car.make = form.querySelector('select[name="make"]').value
+        car.model = form.querySelector('input[name="model"]').value
+        car.price = form.querySelector('input[name="price"]').value
+        console.log(JSON.stringify(car))
+        return car
+    }
+
+    function getAllAjax(){
+        $.ajax({
+            "url": "http://127.0.0.1:5000/football",
+            "method": "GET",
+            "data": "",
+            "dataType": "JSON",
+            "success": function(result){
+                for (football of result){
+                    addFootballToTable(football);
+                }
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    function createFootballAjax(football){
+        console.log(JSON.stringify(football));
+        $.ajax({
+            "url": "http://127.0.0.1:5000/football",
+            "method": "POST",
+            "data": JSON.stringify(football),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success": function(result){
+                football.id = result.id
+                addFootballToTable(football)
+                clearForm()       
+                showViewAll()
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    function updateFootballAjax(football){
+        console.log(JSON.stringify(football));
+        $.ajax({
+            "url": "http://127.0.0.1:5000/football",
+            "method": "POST",
+            "data": JSON.stringify(football),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success": function(result){
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    function deleteFootballAjax(football){
+        console.log(JSON.stringify(football));
+        $.ajax({
+            "url": "http://127.0.0.1:5000/football",
+            "method": "DELETE",
+            "data": "",
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success": function(result){
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+
+    getAllAjax();
+
+    </script>
+</html>
