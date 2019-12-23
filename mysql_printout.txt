@@ -1,0 +1,68 @@
+root@localhost-MySQL8.0.18-['(none)']>show databases
+    -> ;
++--------------------+
+| Database           |
++--------------------+
+| datarep            |
+| information_schema |
+| leagues            |
+| mysql              |
+| performance_schema |
+| sys                |
+| testdb             |
++--------------------+
+7 rows in set (0.08 sec)
+
+root@localhost-MySQL8.0.18-['(none)']>use leagues;
+Database changed
+root@localhost-MySQL8.0.18-['leagues']>show tables;
++-------------------+
+| Tables_in_leagues |
++-------------------+
+| football          |
++-------------------+
+1 row in set (0.03 sec)
+
+root@localhost-MySQL8.0.18-['leagues']>desc football
+    -> ;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment |
+| league      | varchar(255) | YES  |     | NULL    |                |
+| club        | varchar(255) | YES  |     | NULL    |                |
+| known_as    | varchar(255) | YES  |     | NULL    |                |
+| manager     | varchar(255) | YES  |     | NULL    |                |
+| home_ground | varchar(255) | YES  |     | NULL    |                |
+| capacity    | int(11)      | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+7 rows in set (0.01 sec)
+
+root@localhost-MySQL8.0.18-['leagues']>select * from football;
++----+----------------+-------------------------+----------------+----------------------+---------------------------+----------+
+| id | league         | club                    | known_as       | manager              | home_ground               | capacity |
++----+----------------+-------------------------+----------------+----------------------+---------------------------+----------+
+|  2 | Premier League | AFC Bournemounth        | The Cherries   | Eddie Howe           | Vitality Stadium          |    11360 |
+|  3 | Premier League | Arsenal                 | The Gunners    | Freddie Ljungberg    | Emirates Stadium          |    60260 |
+|  4 | Premier League | Aston Villa             | The Villains   | Dean Smith           | Villa Park                |    42682 |
+|  5 | Premier League | Brighton & Hove Albion  | The Seagulls   | Graham Potter        | Amex Stadium              |    30750 |
+|  6 | Premier League | Burnley                 | The Clarets    | Sean Dyche           | Turf Moor                 |    22546 |
+|  7 | Premier League | Chelsea                 | The Blues      | Frank Lampard        | Stamford Bridge           |    41631 |
+|  8 | Premier League | Crystal Palace          | The Eagles     | Roy Hodgson          | Selhurst Park             |    25456 |
+|  9 | Premier League | Everton                 | The Toffees    | Duncan Ferguson      | Goodison Park             |    39572 |
+| 10 | Premier League | Leicester City          | The Foxes      | Brendan Rodgers      | King Power Stadium        |    32312 |
+| 11 | Premier League | Liverpool               | The Reds       | Jürgen Klopp         | Anfield                   |    54074 |
+| 12 | Premier League | Manchester City         | The Citizens   | Pep Guardiola        | Etihad Stadium            |    55097 |
+| 13 | Premier League | Manchester United       | The Red Devils | Ole Gunnar Solskjaer | Old Trafford              |    74994 |
+| 14 | Premier League | Newcastle United        | The Magpies    | Steve Bruce          | St James' Park            |    52405 |
+| 15 | Premier League | Norwich City            | The Canaries   | Daniel Farke         | Carrow Road               |    27244 |
+| 16 | Premier League | Sheffield United        | The Blades     | Chris Wilder         | Bramall Lane              |    32701 |
+| 17 | Premier League | Southampton             | The Saints     | Ralph Hasenhüttl     | St Mary?s Stadium         |    32505 |
+| 18 | Premier League | Tottenham Hotspur       | The Spurs      | Jose Morinho         | Tottenham Hotspur Stadium |    62062 |
+| 19 | Premier League | Watford                 | The Hornets    | Nigel Pearson        | Vicarage Road             |    21577 |
+| 20 | Premier League | West Ham United         | The Hammers    | Manuel Pellegrini    | London Stadium            |    60000 |
+| 21 | Premier League | Wolverhampton Wanderers | Wolves         | Nuno Espirito Santo  | Molineux                  |    31700 |
++----+----------------+-------------------------+----------------+----------------------+---------------------------+----------+
+20 rows in set (0.01 sec)
+
+root@localhost-MySQL8.0.18-['leagues']>
